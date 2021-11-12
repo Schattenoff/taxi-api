@@ -23,7 +23,7 @@ class UserRepository {
   static async update(userId, user) {
     await firestore().collection(databaseCollections.users)
       .doc(userId)
-      .update(user);
+      .set(user, {merge: true});
   }
 
   static async getUserById(userId) {

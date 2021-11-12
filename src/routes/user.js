@@ -32,6 +32,12 @@ router.patch(
   specificRoles([userRoles.admin]),
   validator({body: validationSchemas.block}),
   requestWrapper(UserController.blockOrUnlockUser)
-)
+);
+router.post(
+  '/:userId/photo',
+  isAuthenticated,
+  specificRoles([userRoles.driver]),
+  requestWrapper(UserController.saveCarPhoto)
+);
 
 module.exports = router;

@@ -20,7 +20,7 @@ module.exports = Joi.object().keys({
       model: Joi.string().required(),
       year: Joi.number().required(),
       color: Joi.string().required()
-    }),
+    }).required(),
     otherwise: Joi.forbidden()
   })
 });

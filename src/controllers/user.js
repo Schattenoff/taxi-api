@@ -1,3 +1,6 @@
+const formidable = require('formidable');
+const { getStorage } = require('firebase-admin/storage');
+
 const UserRepository = require('../repositories/user');
 const TripRepository = require('../repositories/trip');
 const NotFoundError = require('../errors/not-found');
@@ -5,6 +8,22 @@ const { userRoles } = require('../constants');
 const ConflictError = require('../errors/conflict');
 
 class UserController {
+
+  static async saveCarPhoto(request, response) {
+    const { userId } = request.params;
+    new formidable.IncomingForm().parse(request, async (err, fields, file) => {
+      let result = await getStorage().bucket().upload(file[''].filepath, {
+        metadata: {
+          contentType: file[''].mimetype
+        },
+        public: true
+      });
+
+      await UserRepository.update(userId, {car: {photo: result[1].mediaLink}});      
+    });
+
+    return response.status(204).send();
+  }
 
   static async getListOfUsers(request, response) {
     const { page, size } = request.query;
