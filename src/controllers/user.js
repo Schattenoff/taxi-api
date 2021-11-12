@@ -11,13 +11,22 @@ class UserController {
 
   static async saveCarPhoto(request, response) {
     const { userId } = request.params;
+    const user = await UserRepository.getUserById(userId);
+
+    if (!user) {
+      throw new NotFoundError('User not found.');
+    }
+
     new formidable.IncomingForm().parse(request, async (err, fields, file) => {
+      if (err) throw err;
+
       let result = await getStorage().bucket().upload(file[''].filepath, {
         metadata: {
           contentType: file[''].mimetype
         },
         public: true
       });
+
 
       await UserRepository.update(userId, {car: {photo: result[1].mediaLink}});      
     });
