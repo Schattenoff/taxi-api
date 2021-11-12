@@ -2,6 +2,7 @@ const Mailer = require('./mailer');
 const formidable = require('formidable');
 
 const UnprocessableEntityError = require('./errors/validation');
+const constants = require('./constants');
 
 exports.sendResetPasswordLink = (email, link, firstName, lastName) => {
   return Mailer.sendMessage(`<h1>Hi ${firstName} ${lastName}!</h1>
@@ -19,15 +20,27 @@ exports.sendEmailVerificationLink = (email, link, firstName, lastName) => {
 };
 
 exports.readFormData = (request) => new Promise((resolve, reject) => {
-  new formidable.IncomingForm().parse(request, async (error, fields, file) => {
+  new formidable.IncomingForm().parse(request, async (error, fields, files) => {
+    const file = files['file'];
+
     if (!error) {
-      if (file['file']?.size > 5000000) {
-        reject(new UnprocessableEntityError('Maximum file size is 5Mb!'))
+      if (!file) {
+        reject(new UnprocessableEntityError('Photo of the car is required!'));
+      } else
+      if (file.size > 5000000) {
+        reject(new UnprocessableEntityError('Maximum file size is 5Mb!'));
+      }
+      if (!checkAttributeOnExtension(file.mimetype) && !checkAttributeOnExtension(file.originalFilename)) {
+        reject(new UnprocessableEntityError('Photo must have one of the following formats: .jpg, .jpeg'));
       } else {
-        resolve(file['file']);
+        resolve(file);
       }
     } else {
       reject(error);
     }     
   });
 })
+
+const checkAttributeOnExtension = (attribute) => {
+  return constants.acceptedPhotoFormats.some(format => attribute.includes(format));
+};

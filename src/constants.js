@@ -28,3 +28,5 @@ exports.fromFirebaseErrorToCustom = new Map([
     message: 'The email address is already in use by another account.'
   }]
 ]);
+
+exports.acceptedPhotoFormats = ['.JPG', '.jpg', '.JPEG', '.jpeg'];

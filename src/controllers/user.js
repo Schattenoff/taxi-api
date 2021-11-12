@@ -20,11 +20,6 @@ class UserController {
     }
 
     const file = await helpers.readFormData(request);
-
-    if (!file) {
-      throw new UnprocessableEntityError('Photo of the car is required!');
-    }
-
     const result = await getStorage().bucket().upload(file.filepath, {
       metadata: {
         contentType: file.mimetype
