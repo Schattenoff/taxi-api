@@ -21,10 +21,10 @@ exports.sendEmailVerificationLink = (email, link, firstName, lastName) => {
 exports.readFormData = (request) => new Promise((resolve, reject) => {
   new formidable.IncomingForm().parse(request, async (error, fields, file) => {
     if (!error) {
-      if (file[''].size > 5000000) {
+      if (file['file']?.size > 5000000) {
         reject(new UnprocessableEntityError('Maximum file size is 5Mb!'))
       } else {
-        resolve(file['']);
+        resolve(file['file']);
       }
     } else {
       reject(error);
