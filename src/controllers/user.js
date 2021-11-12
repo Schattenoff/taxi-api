@@ -6,6 +6,8 @@ const TripRepository = require('../repositories/trip');
 const NotFoundError = require('../errors/not-found');
 const { userRoles } = require('../constants');
 const ConflictError = require('../errors/conflict');
+const UnprocessableEntityError = require('../errors/validation');
+const helpers = require('../helpers');
 
 class UserController {
 
@@ -17,19 +19,19 @@ class UserController {
       throw new NotFoundError('User not found.');
     }
 
-    new formidable.IncomingForm().parse(request, async (err, fields, file) => {
-      if (err) throw err;
+    const file = await helpers.readFormData(request);
 
-      let result = await getStorage().bucket().upload(file[''].filepath, {
-        metadata: {
-          contentType: file[''].mimetype
-        },
-        public: true
-      });
+    if (!file) {
+      throw new UnprocessableEntityError('Photo of the car is required!');
+    }
 
-
-      await UserRepository.update(userId, {car: {photo: result[1].mediaLink}});      
+    const result = await getStorage().bucket().upload(file.filepath, {
+      metadata: {
+        contentType: file.mimetype
+      },
+      public: true
     });
+    await UserRepository.update(userId, {car: {photo: result[1].mediaLink}});      
 
     return response.status(204).send();
   }
