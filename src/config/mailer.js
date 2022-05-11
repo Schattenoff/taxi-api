@@ -1,6 +1,6 @@
 module.exports = {
   user: 'generalSoftTaxi@gmail.com',
   password: '4815162342lL!',
-  mailService: 'gmail',
+  mailService: 'smtp.gmail.com',
   mailSubject: 'General Soft Taxi Verification'
 }

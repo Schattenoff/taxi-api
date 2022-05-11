@@ -5,7 +5,9 @@ const config = require('./config/mailer');
 class Mailer {
   init() {
     this._transporter = mailer.createTransport({
-      service: config.mailService,
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, 
       auth: {
         user: config.user,
         pass: config.password
