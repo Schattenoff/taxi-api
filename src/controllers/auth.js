@@ -29,7 +29,7 @@ class AuthController {
 
     response.send({
       accessToken: data.access_token,
-      expirationTime: 3600,
+      expirationTime: new Date().valueOf() + 3600000,
       refreshToken: data.refresh_token
     });
   }
