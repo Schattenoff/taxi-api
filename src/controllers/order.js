@@ -4,6 +4,7 @@ const ConflictError = require('../errors/conflict');
 const OrderRepository = require('../repositories/order');
 const OfferRepository = require('../repositories/offer');
 const TripRepository = require('../repositories/trip');
+const UserRepository = require('../repositories/user');
 
 class OrderController {
 
@@ -16,7 +17,8 @@ class OrderController {
     }
     await Promise.all([
       OrderRepository.deleteOrderById(orderId),
-      OfferRepository.deleteOffersByOrderId(orderId)
+      OfferRepository.deleteOffersByOrderId(orderId),
+      UserRepository.update(request.user.uid, {currentOrder: null})
     ]);
     response.status(204).send();
   }
@@ -40,8 +42,10 @@ class OrderController {
       source,
       destination
     );
+
+    await UserRepository.update(request.user.uid, {currentOrder: createdOrderId});
     
-    response.send({id: createdOrderId});
+    response.status(204).send();
   }
 
   static async getOrders(request, response) {

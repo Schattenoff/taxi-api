@@ -3,6 +3,7 @@ const OfferRepository = require('../repositories/offer');
 const OrderRepository = require('../repositories/order');
 const NotFoundError = require('../errors/not-found');
 const ConflictError = require('../errors/conflict');
+const UserRepository = require('../repositories/user');
 
 class TripController {
 
@@ -32,7 +33,8 @@ class TripController {
     );
     await Promise.all([
       OrderRepository.deleteOrderById(clientOrder.id),
-      OfferRepository.deleteOffersByOrderId(clientOrder.id)
+      OfferRepository.deleteOffersByOrderId(clientOrder.id),
+      UserRepository.update(request.user.uid, {currentOrder: null})
     ]);
 
     response.send({id: tripId});
