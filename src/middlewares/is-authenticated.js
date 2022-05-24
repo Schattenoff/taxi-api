@@ -15,6 +15,6 @@ module.exports = async (request, response, next) => {
     request.user = await getAuth().verifyIdToken(split[1], true);
     next();
   } catch(exception) {
-    next(new UnauthorizedError('You access token has expired'));
+    next(new AuthenticationError('You access token has expired'));
   }
 };

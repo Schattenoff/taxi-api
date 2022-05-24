@@ -1,10 +1,10 @@
+const { userRoles } = require('../constants');
 const OfferRepository = require('../repositories/offer');
 const OrderRepository = require('../repositories/order');
 const ConflictError = require('../errors/conflict');
 const NotFoundError = require('../errors/not-found');
-const ValidationEntityError = require('../errors/validation')
-const { userRoles } = require('../constants');
 const ValidationError = require('../errors/validation');
+const UserRepository = require('../repositories/user');
 
 class OfferController {
 
@@ -46,6 +46,7 @@ class OfferController {
     const { orderId, price } = request.body;
     const driverOffers = await OfferRepository.getOffersByDriverId(request.user.uid);
     const order = await OrderRepository.getById(orderId);
+    const driverData = await UserRepository.getUserById(request.user.uid);
 
     if (!order) {
       throw NotFoundError('This order does not exist.');
@@ -56,7 +57,7 @@ class OfferController {
 
     const offerId = await OfferRepository.createOffer(
       orderId,
-      request.user,
+      driverData,
       price
     );
     response.send({id: offerId});
