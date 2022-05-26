@@ -48,7 +48,7 @@ class OfferRepository {
         orderId,
         driver: {
           car: driver.car,
-          id: driver.uid,
+          id: driver.id,
           firstName: driver.firstName,
           lastName: driver.lastName
         },
