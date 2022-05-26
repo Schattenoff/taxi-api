@@ -50,7 +50,8 @@ class OfferRepository {
           car: driver.car,
           id: driver.id,
           firstName: driver.firstName,
-          lastName: driver.lastName
+          lastName: driver.lastName,
+          rating: driver.rating
         },
         price,
         createdAt: new Date().valueOf()
