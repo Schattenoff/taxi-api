@@ -1,4 +1,5 @@
 const ReportRepository = require('../repositories/report');
+const TripRepository = require('../repositories/trip');
 const UserRepository = require('../repositories/user');
 
 class ReportController {
@@ -10,10 +11,13 @@ class ReportController {
   }
 
   static async create(request, response) {
-    const { driverId, comment } = request.body;
+    const { driverId, tripId, comment } = request.body;
     const driver = await UserRepository.getUserById(driverId);
 
-    await ReportRepository.create({driver, comment});
+    await Promise.all([
+      TripRepository.updateTrip(tripId, {report: comment}),
+      ReportRepository.create({driver, comment})
+    ]);
     response.status(204).send();
   }
 
