@@ -54,9 +54,14 @@ class TripController {
   }
 
   static async getTrips(request, response) {
-    const { active } = request.query;
+    const { active, page, size } = request.query;
 
-    response.send(await TripRepository.getTrips(request.user.uid, active === 'false' ? false : true));
+    response.send(await TripRepository.getTrips(
+      request.user,
+      active === 'false' ? false : true,
+      Number(page),
+      Number(size)
+    ));
   }
 
 }

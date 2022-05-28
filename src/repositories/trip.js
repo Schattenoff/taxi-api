@@ -13,22 +13,34 @@ class TripRepository {
     await firestore().collection(databaseCollections.trips).doc(tripId).update(trip);
   }
 
-  static async getTrips(userId, active) {
-    const clientTripSnapshot = await firestore().collection(databaseCollections.trips)
-      .where('active', '==', active)
-      .where('client.id', '==', userId)
-      .get();
+  static async getTrips(user, active, page, size) {
+    if (page !== undefined && size) {
+      const total = (await firestore().collection(databaseCollections.trips)
+        .where('active', '==', active)
+        .where(`${user.role}.id`, '==', user.uid)
+        .get()).size;
+      const tripSnapshot = await firestore().collection(databaseCollections.trips)
+        .where('active', '==', active)
+        .where(`${user.role}.id`, '==', user.uid)
+        .orderBy('createdAt')
+        .limit(size)
+        .offset(page * size)
+        .get();
+      const items = tripSnapshot.docs.map(snapshot => snapshot.data());
 
-    if (clientTripSnapshot.docs.length) {
-      return clientTripSnapshot.docs.map(snapshot => snapshot.data());
+      return {
+        total,
+        items
+      };
+    } else {
+      const tripSnapshot = await firestore().collection(databaseCollections.trips)
+        .where('active', '==', active)
+        .where(`${user.role}.id`, '==', user.uid)
+        .orderBy('createdAt')
+        .get();
+
+      return tripSnapshot.docs.map(snapshot => snapshot.data());
     }
-
-    const driverTripSnapshot = await firestore().collection(databaseCollections.trips)
-      .where('active', '==', active)
-      .where('driver.id', '==', userId)
-      .get();
-    
-    return driverTripSnapshot.docs.map(snapshot => snapshot.data());
   }
 
   static async createTrip(driver, client, source, destination, price) {
