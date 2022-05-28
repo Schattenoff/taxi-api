@@ -13,7 +13,7 @@ class TripController {
     const [offer, clientOrder, activeTrips] = await Promise.all([
       OfferRepository.getOfferById(offerId),
       OrderRepository.getClientOrder(request.user.uid),
-      TripRepository.getTrips(request.user.uid, true)
+      TripRepository.getTrips(request.user, true)
     ]);
     if (activeTrips[0]) {
       throw new ConflictError('You already have an active trip.');

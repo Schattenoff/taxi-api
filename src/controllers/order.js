@@ -28,7 +28,7 @@ class OrderController {
 
     if (
       await OrderRepository.getClientOrder(request.user.uid) ||
-      (await TripRepository.getTrips(request.user.uid, true))[0]
+      (await TripRepository.getTrips(request.user, true))[0]
     ) {
       throw new ConflictError('You already have requested order or active trip.');
     }
