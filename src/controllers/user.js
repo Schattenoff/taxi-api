@@ -73,7 +73,7 @@ class UserController {
         rating: calculatedRating 
       }),
       TripRepository.updateTrip(tripId, {
-        rating: calculatedRating
+        rating: ratingFromTheUser
       })
     ]);
 
