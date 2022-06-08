@@ -5,7 +5,7 @@ const config = require('./config/mailer');
 class Mailer {
   init() {
     this._transporter = mailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: 'smtp.yandex.by',
       port: 465,
       secure: true, 
       auth: {
