@@ -12,7 +12,7 @@ module.exports = Joi.object().keys({
   password: Joi.string().min(6).max(20).required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  role: Joi.string().valid(userRoles.client, userRoles.driver).required(),
+  role: Joi.string().valid(userRoles.client, userRoles.driver, userRoles.admin).required(),
   car: Joi.when('role', {
     is: Joi.string().valid(userRoles.driver),
     then: Joi.object().keys({

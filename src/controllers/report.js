@@ -12,11 +12,14 @@ class ReportController {
 
   static async create(request, response) {
     const { driverId, tripId, comment } = request.body;
-    const driver = await UserRepository.getUserById(driverId);
+    const [driver, client] = await Promise.all([
+      UserRepository.getUserById(driverId),
+      UserRepository.getUserById(request.user.uid)
+    ]);
 
     await Promise.all([
       TripRepository.updateTrip(tripId, {report: comment}),
-      ReportRepository.create({driver, comment})
+      ReportRepository.create({driver, comment, client})
     ]);
     response.status(204).send();
   }

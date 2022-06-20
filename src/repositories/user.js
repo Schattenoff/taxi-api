@@ -3,16 +3,28 @@ const { databaseCollections } = require('../constants');
 
 class UserRepository {
 
-  static async getAll(page, size) {
+  static async getAll(page, size, role) {
     let userSnapshots;
 
     if (page !== undefined && size) {
+      const total = (await firestore().collection(databaseCollections.users)
+        .where('role', '==', role)
+        .orderBy('createdAt')
+        .get()).size;
+
       userSnapshots = await firestore().collection(databaseCollections.users)
+        .where('role', '==', role)
         .orderBy('createdAt')
         .limit(size)
         .offset(page * size).get();
+
+      return {
+        items: userSnapshots.docs.map(snapshot => snapshot.data()),
+        total
+      };
     } else {
       userSnapshots = await firestore().collection(databaseCollections.users)
+        .where('role', '==', role)
         .orderBy('createdAt')
         .get();
     }

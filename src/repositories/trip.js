@@ -22,7 +22,7 @@ class TripRepository {
       const tripSnapshot = await firestore().collection(databaseCollections.trips)
         .where('active', '==', active)
         .where(`${user.role}.id`, '==', user.uid)
-        .orderBy('createdAt')
+        .orderBy('createdAt', 'desc')
         .limit(size)
         .offset(page * size)
         .get();

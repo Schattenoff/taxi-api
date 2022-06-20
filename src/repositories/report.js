@@ -8,18 +8,25 @@ class ReportRepository {
     let reportSnapshots;
 
     if (page !== undefined && size) {
+      const total = (await firestore().collection(databaseCollections.reports).get()).size;
       reportSnapshots = await firestore().collection(databaseCollections.reports)
-        .orderBy('createdAt')
+        .orderBy('createdAt', 'desc')
         .limit(size)
         .offset(page * size)
         .get();
+      const items = reportSnapshots.docs.map(snapshot => snapshot.data());
+
+      return {
+        total,
+        items
+      };
     } else {
       reportSnapshots = await firestore().collection(databaseCollections.reports)
         .orderBy('createdAt')
         .get();
-    }
 
-    return reportSnapshots.docs.map(snapshot => snapshot.data());
+      return reportSnapshots.docs.map(snapshot => snapshot.data());
+    }
   }
 
   static async create(report) {

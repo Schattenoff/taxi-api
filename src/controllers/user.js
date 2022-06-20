@@ -32,14 +32,14 @@ class UserController {
   }
 
   static async getListOfUsers(request, response) {
-    const { page, size } = request.query;
+    const { page, size, role } = request.query;
 
-    response.send(await UserRepository.getAll(Number(page), Number(size)));
+    response.send(await UserRepository.getAll(Number(page), Number(size), role));
   }
 
   static async blockOrUnlockUser(request, response) {
     const { userId } = request.params;
-    const { blockedUntil, blocked } = request.body;
+    const { blockedUntil = null, blocked } = request.body;
     const user = await UserRepository.getUserById(userId);
 
     if (!user) {
